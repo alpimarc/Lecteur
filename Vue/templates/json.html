@@ -1,0 +1,7 @@
+{
+    "status"  : "success",
+    "records" : {{nb_lignes}},
+    "total"   : {{nb_pages}},
+    "rows"    : {{curseur|safe}}{% if url %},{% autoescape off %}
+    "url"     : "{{url}}"{% endautoescape %}{% endif %}
+}

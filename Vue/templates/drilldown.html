@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block Titre %}Detail{% endblock Titre %}
+
+{% block Top %}{% endblock Top %}
+
+{% block Redimensionne %}
+	$("#jqGrid{{id}}").jqGrid("setGridWidth", dim[0]*1)
+	$("#jqGrid{{id}}").jqGrid("setGridHeight", dim[1]*0.90)
+{% endblock Redimensionne %}
+
+{% block Table %}
+{% endblock Table %}
+
+{% block Body %}
+	{% include "table_drilldown.html" with id_file=id_file entetesTypes=entetesTypes id_table_retour=id_table_retour %}
+{% endblock Body %}

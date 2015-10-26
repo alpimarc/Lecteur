@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load tags_extras %}
+
+{% block Body %}
+	{% include 'sous_sidebar.html' with id_file=id_file listeTables=listeTables %}
+{% endblock Body %}

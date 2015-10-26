@@ -1,0 +1,50 @@
+{% extends "table.html" %}
+{% load tags_extras %}
+
+{% block Taille_tableau%}1.00{% endblock Taille_tableau%}
+
+{%block Table_url_json %}
+	url:'critere_json_{{id_table}}_{{id_ligne}}{% if graphique != 0 %}?graphique={{graphique}}&colonne={{colonne}}{%endif%}',
+{% endblock Table_url_json %}
+
+{% block Table_entete_label %}
+	{{entete|sous_formatRapport|safe}}
+{% endblock Table_entete_label %}
+
+{% block Table_entete_name %}
+	{{entete|sous_formatRapport|safe|lower}}
+{% endblock Table_entete_name %}
+
+{% block Table_hidden_champ %}
+	{% if entete == 'PieceDate' or entete == 'EcritureLet' or entete == 'DateLet' or entete == 'Montantdevise' or entete == 'Idevise' or entete == 'SchemaSimplifie' or entete == 'IntituleSchema' or entete == 'TypeSchema' %}hidden: true,{% endif %}
+{% endblock Table_hidden_champ %}
+
+{% block Table_tooltip_par_defaut_champ %}title: false,{% endblock Table_tooltip_par_defaut_champ %}
+
+{% block Table_tooltip_custom %}
+	var ids = jQuery("#jqGrid{{id}}").jqGrid('getDataIDs');
+	for (var i=0;i<ids.length;i++) {
+		var id=ids[i];
+		var rowData = jQuery("#jqGrid{{id}}").jqGrid('getRowData',id);
+		var tooltip
+		if (rowData.intituleschema != '') {
+			if (rowData.typeschema == "Inverse") {
+				tooltip = rowData.intituleschema + " - Annulation"
+			} else {
+				tooltip = rowData.intituleschema
+			}
+		} else if (rowData.schemasimplifie != '') {
+			tooltip = rowData.schemasimplifie
+		} else {
+			tooltip = rowData.schemaecr
+		}
+		$('#'+id,jQuery("#jqGrid{{id}}")[0]).attr('title', tooltip);
+	}
+{% endblock Table_tooltip_custom %}
+
+{% block Url_export_csv %}{% url 'Vue.views.view_csv_critere' id_file=id_file id_table=id_table id_ligne=id_ligne %}{% endblock Url_export_csv %}
+
+{% block Table_dblclick %}
+        var record = '?csrfmiddlewaretoken={{ csrf_token }}'
+        var myWindow = window.open("{% url 'Vue.views.drilldown' id_file id_table_retour '' %}"+rowid+record, "MsgWindow", "width=100%, height=100%");
+{% endblock Table_dblclick %}

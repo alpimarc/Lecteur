@@ -1,0 +1,90 @@
+<script type="text/javascript">
+    hauteur=getDocumentSize()[1];
+	var chart;
+    var data;
+    var view;
+	var url_filtre;
+	var jsonData;
+    function drawChartX(id){
+		current_id=id;
+		console.log('id = ' + current_id);
+		{% for id, type, titre, nb_pages, inverse in tablesGraphiques %}
+			if (id=={{id}}){drawChart{{id}}();}
+		{% endfor %}
+	}
+    {% for id, type, titre, nb_pages, inverse in tablesGraphiques %}
+        {% if forloop.first %}var current_id = {{id}};
+		var pager = { currentPage: 0, pageSize: {{nb_items_par_page}}, pageMax: {{nb_pages}} };{% endif %}
+		var options_{{id}} = {title: "{{titre}}", 'isStacked': true, height: hauteur*0.5-70};
+        function drawChart{{id}}() {
+             jsonData = $.ajax({
+                url: "graphique_{{id}}.json?offset="+pager.currentPage*pager.pageSize+"&limit=" + pager.pageSize + url_filtre,
+                dataType:"json",
+                async: false,
+                success: function changePages(reponse) {
+                    console.log(pager.pageSize);
+                    pager.currentPage = reponse.num_page;
+                    document.getElementById("num_page").innerHTML=pager.currentPage+1;
+                    pager.pageMax = reponse.nb_pages;
+                    document.getElementById("pageMax").innerHTML=pager.pageMax;
+                }
+                });
+            
+            
+            data= new google.visualization.DataTable(jsonData.responseText);
+            view=new google.visualization.DataView(data);
+            {# [{{table|safe}}] si table déjà générée et si pas de autoescape off #}
+            view.hide{% if inverse %}Rows([0]){% else %}Columns([1]){% endif %};
+            chart = new google.visualization.{{type}}Chart(document.getElementById('chart_div'));
+            chart.draw(view, options_{{id}});
+            google.visualization.events.addListener(chart, 'select', function () {
+                var sel = chart.getSelection();
+                // if selection length is 0, we deselected an element
+                if (sel.length > 0) {
+                    // si row est null, click sur la légende
+                    if (sel[0].row != null && sel[0].column != null) {
+                        {% for id_table, tableResultat, entetesTypes_table in tablesResultats %}{% if forloop.first %}
+                            var myWindow = window.open("{% url 'Vue.views.drilldown' id_file id_table '' %}"+{% if inverse %}data.getValue(0,sel[0].column){%else%}data.getValue(sel[0].row, 1){%endif%}+"?graphique={{id}}&colonne="+{% if inverse %}data.getValue(sel[0].row+1, 0){% else %}jsonData.responseJSON.cols[sel[0].column+1].id{% endif %}, "MsgWindow", fullscreen='yes');//"width=100%, height=100%";{% endif %}{% endfor %}
+                    }
+                }
+            });
+        }
+        function Paginate(dir) { 
+            // moving page number 
+            if (pager.currentPage == 0 && dir == 'prev') return; 
+            if (dir == 'next' && pager.currentPage + 1 >= pager.pageMax) return;
+            if (dir == 'next') pager.currentPage += 1; 
+            if (dir == 'prev') pager.currentPage -= 1; 
+            
+            {% for id, type, titre, nb_pages, inverse in tablesGraphiques %}
+                var jsonData = $.ajax({
+                    url: "graphique_"+current_id+".json?offset="+pager.currentPage*pager.pageSize+"&limit=" + pager.pageSize + url_filtre,
+                    dataType:"json",
+                    async: false,
+                    success: function changePages(reponse) {
+                        console.log(reponse.num_page);
+                        pager.currentPage = reponse.num_page;
+                        document.getElementById("num_page").innerHTML=pager.currentPage+1;
+                        pager.pageMax = reponse.nb_pages;
+                        document.getElementById("pageMax").innerHTML=pager.pageMax;
+                    }
+                    }).responseText;
+                data = new google.visualization.DataTable(jsonData);
+                view=new google.visualization.DataView(data);
+                view.hide{% if inverse %}Rows([0]){% else %}Columns([1]){% endif %};
+                chart.draw(view, options_{{id}});
+                document.getElementById("num_page").innerHTML=pager.currentPage+1;
+            {% endfor %}
+
+        }
+    {% endfor %}
+    function drawChart(){
+            drawChartX(current_id);
+    }
+    function resizeChart(){
+        {% for id, type, titre, nb_pages, inverse in tablesGraphiques %}
+            if (current_id=={{id}}){chart.draw(view, options_{{id}});}
+        {% endfor %}
+    }
+    //google.setOnLoadCallback(drawChart);
+</script>

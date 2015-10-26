@@ -1,0 +1,59 @@
+﻿<span class="auto-style2">
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+</span>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="fr" http-equiv="Content-Language" />
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<span class="auto-style2">
+			<title>
+				Visionneuse - {{id_file}} - {% block Titre %}{% endblock Titre %}
+			</title>
+		</span>
+
+		{% include "Scripts.html"%}
+		<script type="text/javascript">
+			function getDocumentSize(){
+				return new Array((document.documentElement && document.documentElement.scrollWidth) ? document.documentElement.scrollWidth : (document.body.scrollWidth > document.body.offsetWidth) ? document.body.scrollWidth : document.body.offsetWidth,(document.documentElement && document.documentElement.scrollHeight) ? document.documentElement.scrollHeight : (document.body.scrollHeight > document.body.offsetHeight) ? document.body.scrollHeight : document.body.offsetHeight);
+			}
+		</script>
+		{% block Graphique_header %}{% endblock Graphique_header %}
+		<script type="text/javascript">
+			var timer;
+			resize = function(event) {
+				clearTimeout(timer);
+				timer = setTimeout(function(){
+					var dim=getDocumentSize();
+					{% block Redimensionne %}
+					{% endblock Redimensionne %}
+				}, 75);
+			};
+			window.onresize = resize;
+			window.onload = resize;
+		</script>
+	</head>
+
+	<body>
+		{% block Body %}
+			{% block Top %}
+				<div id="top-div" class="content-top">
+					<div class='top_titre'>
+					<h3>Visionneuse - {{id_file}} - {% block Top_titre %}{% endblock Top_titre %}</h3>
+					</div>
+					<div class='boutons'>
+				    {% block boutons %}{% endblock boutons %}
+					</div>
+				</div>
+			{% endblock Top %}
+					
+			{% block Graphique %}
+			{% endblock Graphique %}
+			
+			{% block Table %}
+			{% endblock Table %}
+			
+			{% block Aide %}{% endblock Aide %}
+		{% endblock Body %}
+	</body>
+	{% include "script columnchanger.html" %}
+</html>

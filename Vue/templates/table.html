@@ -1,0 +1,152 @@
+{% load tags_extras %}
+    <table id="jqGrid{{id}}"></table>
+    <div id="jqGridPager{{id}}"></div>
+
+    <!--<button class="btn" onclick="showChanged()">Get Changed</button>-->
+    <script type="text/javascript">
+		var color{{id}} = true;
+		var prev_cle_{{id}} ;
+        $(document).ready(function () {
+            $("#jqGrid{{id}}").jqGrid({
+                {% block Table_url_json %}{% endblock Table_url_json %}
+                mtype: "GET",
+                datatype: "json",
+                page: 1,
+                colModel: [
+                    {% for entete, type in entetesTypes %}
+                        {   label : {% block Table_entete_label %}{% endblock Table_entete_label %},
+                            //sorttype: 'integer',
+                            name: {% block Table_entete_name %}{% endblock Table_entete_name %}, 
+                            {% if forloop.first %}hidden: true,{% endif %}
+                            {% block Table_hidden_champ %}{% endblock Table_hidden_champ %}
+                            {% if forloop.first%}key: true,{%endif%}
+                            autowidth: true,
+                            {% ifequal type 'float'%}formatter: 'number',
+                            align: 'right',{% endifequal %}
+							{% block Table_checkbox %}
+							{% endblock Table_checkbox %}
+							searchoptions: {
+                            // show search options
+                            sopt: ['cn','nc','eq','ne','lt','le','gt','ge','bw','bn',/*'in','ni',*/'ew','en'] // ge = greater or equal to, le = less or equal to, eq = equal to
+                            },
+                            {% block Table_tooltip_par_defaut_champ %}{% endblock Table_tooltip_par_defaut_champ %}
+                        },
+                    {% endfor %}
+                ],
+                //loadonce: true,
+                viewrecords: true,
+                //autowith: true,
+                shrinkToFit: true,
+                //forceFit: true,
+                width: getDocumentSize()[0]*0.99,
+                height: getDocumentSize()[1]*0.85{% if tablesGraphiques%}*0.5{%endif%}{% if tablesResultats.count > 1 %}*0.5{%endif%},
+                //autoheight: true,
+                rowNum: {{nb_lignes_par_page}},
+                scroll: 1,
+                //emptyrecords: 'Scroll to bottom to retrieve new page', // the message will be displayed at the bottom 
+                pager: "#jqGridPager{{id}}",
+                caption: "{{tableResultat}}",
+                sortable: true,
+				gridview: true,
+//				altRows: true,
+                ondblClickRow: function(rowid, iRow, iCol, e){ 
+                    {% block Table_dblclick %}
+                    {% endblock Table_dblclick %}
+                },
+/*				rowattr: function(rowData, currentObj, rowId){
+					if (prev_ecriturenum_{{id}}!=rowData.ecriturenum){
+						color{{id}}!=color{{id}}
+					}
+					prev_ecriturenum_{{id}}=rowData.ecriturenum
+					var res = "";
+					if (color{{id}}){ 
+						console.log(currentObj);
+						res = {"style": "background-color:blue", "class": ""};
+					}
+					console.log(res);
+					return res
+				},*/
+				//cellattr: function () { return ' title="Here is my tooltip on colCell!"'; },
+				gridComplete: function() {
+						{% block Table_tooltip_custom %}{% endblock Table_tooltip_custom %}
+
+						var liste_colonnes = $("#jqGrid{{id}}").jqGrid('getGridParam','colNames');
+						var cles = [];
+						if (($.inArray("EcritureNum", liste_colonnes)>0 || $.inArray("ecriturenum", liste_colonnes)>0) && ($.inArray("JournalCode", liste_colonnes)>0 || $.inArray("journalcode", liste_colonnes)>0)){
+							cles = ["EcritureNum", "JournalCode"];
+						} else if ($.inArray("EcritureNum", liste_colonnes)>0 || $.inArray("ecriturenum", liste_colonnes)>0){
+							cles = ["EcritureNum"];
+						} else if ($.inArray("CompteNum", liste_colonnes)>0 || $.inArray("comptenum", liste_colonnes)>0){
+							cles = ["CompteNum"];
+						} else if ($.inArray("CompAuxNum", liste_colonnes)>0 || $.inArray("compauxnum", liste_colonnes)>0){
+							cles = ["CompAuxNum"];
+						} else if ($.inArray("JournalCode", liste_colonnes)>0 || $.inArray("journalcode", liste_colonnes)>0){
+							cles = ["JournalCode"];
+						} 
+						$(this).find(">tbody>tr.jqgrow:visible").filter(function (i) {
+							//if ($('#jqGrid{{id}}').jqGrid('getCell',i, "ecriturenum")==$('#jqGrid{{id}}').jqGrid('getCell',i+1, "ecriturenum")) {
+							var current_cle = "";
+							for (var cle in cles) {
+								current_cle = current_cle + $(this).find("td[aria-describedby='jqGrid{{id}}_" + cles[cle] + "']").text() + $(this).find("td[aria-describedby='jqGrid{{id}}_" + cles[cle].toLowerCase() + "']").text();
+							}
+							if (prev_cle_{{id}}!=current_cle) {
+								color{{id}} = ! color{{id}};
+							}
+							if (color{{id}}) {
+								//$(this).css("color", "blue");
+								$(this).find("td").css("background-color", "Gainsboro");//"HoneyDew");
+							} /*else {
+								$(this).css("color", "grey");
+							}*/
+							prev_cle_{{id}}=current_cle;
+						})
+					/*$($("#jqGrid{{id}} tbody tr td[aria-describedby='jqGrid{{id}}_ecriturenum']")).filter(function (i) {console.log($('#jqGrid{{id}}').jqGrid('getRowData',i));var res=ligneColor{{id}}!=$(this).text();ligneColor{{id}}=$(this).text();return res;}).find("td").css("border-style", "solid").css("border-top-width", "15px").css("border-left-width", "0px");
+					/*while ($("#" + ligneColor{{id}} + " td[aria-describedby='jqGrid{{id}}_ecriturenum']").text() != ""){
+						//console.log($("#" + ligneColor{{id}}));
+						if ($("#" + ligneColor{{id}} + " td[aria-describedby='jqGrid{{id}}_ecriturenum']").text() != $("#" + (ligneColor{{id}} - 1) + " td[aria-describedby='jqGrid{{id}}_ecriturenum']").text()){
+							color{{id}} = !color{{id}};
+						}
+						if (color{{id}}) {
+							//$("#" + ligneColor{{id}}).find("td").css("background-color", "grey");
+							$("#" + ligneColor{{id}}).css("background-color", "grey");
+						}
+						ligneColor{{id}} = ligneColor{{id}} + 1;
+					}
+					alert(ligneColor{{id}});*/ 
+				},
+            });
+
+           $('#jqGrid{{id}}').jqGrid('filterToolbar',{
+                // JSON stringify all data from search, including search toolbar operators
+                stringResult: true,
+                // instuct the grid toolbar to show the search options
+                searchOperators: true
+            });
+            $('#jqGrid{{id}}').navGrid("#jqGridPager{{id}}", {
+                search: true, // show search button on the toolbar
+                add: false,
+                edit: false,
+                del: false,
+                refresh: true,
+                },
+                {}, // edit options
+                {}, // add options
+                {}, // delete options
+                { multipleSearch: true, multipleGroup: true, showQuery: true } // search options - define multiple search
+            );
+
+            {% block Table_export_csv %}
+                jQuery('#jqGrid{{id}}').jqGrid('navButtonAdd','#jqGridPager{{id}}',{id:'pager_csv',caption:'',title:'Export To CSV',onClickButton : function(e)
+                {
+                    jQuery("#jqGrid{{id}}").jqGrid('excelExport',{tag:'csv', url:"{% block Url_export_csv %}{% endblock Url_export_csv %}"});
+                },buttonicon:'ui-icon-document'});
+            {% endblock Table_export_csv %}
+            jQuery('#jqGrid{{id}}').jqGrid('navButtonAdd','#jqGridPager{{id}}',{id:'columnChooser',caption:'',title:'Choose columns',onClickButton : function(e)
+            {
+                $(this).jqGrid('columnChooser');
+            },buttonicon:'ui-icon-calculator'}); 
+        });
+		
+		{% block Table_update %}
+		{% endblock Table_update %}
+    </script>

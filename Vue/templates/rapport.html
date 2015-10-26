@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block Titre %}Rapport{% endblock Titre %}
+
+{% block Redimensionne %}
+	$("#jqGrid{{id}}").jqGrid("setGridWidth", dim[0]*1);
+	$("#jqGrid{{id}}").jqGrid("setGridHeight", dim[1]*0.85);//0.925);
+{% endblock Redimensionne %}
+
+{% block Top_titre %}Rapport{% endblock Top_titre %}
+
+{% block Table %}
+	{% include "table_rapport.html" with id_file=id_file entetesTypes=entetesTypes curseur=curseur %}
+{% endblock Table %}

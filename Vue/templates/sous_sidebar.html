@@ -1,0 +1,34 @@
+<div id="sidebar" style="height: 100%; width: 100%;"></div>
+<script type="text/javascript">
+$(function () {
+    $('#sidebar').w2sidebar({
+        name: 'sidebar',
+        nodes: [ 
+			{ id: '-1', text: 'rapport', icon: 'fa-home', expanded: false },
+			{ id: '0', text: 'FILE complet', icon: 'fa-home', expanded: false },
+			{% for row in listeTables%}{% ifchanged row.0 %}{% if not forloop.first %}], },
+			{% endif %}{ id: '{{row.0}}', text: '{{row.0}} - {% ifequal row.0 "A"%}Techniques{%endifequal%}{% ifequal row.0 "B"%}Comptables{%endifequal%}{% ifequal row.0 "C"%}Comptables complementaires{%endifequal%}{% ifequal row.0 "D"%}Revue Fiscale{%endifequal%}{% ifequal row.0 "E"%}Comptabilité{%endifequal%}{% ifequal row.0 "F"%}Contrôle interne{%endifequal%}{% ifequal row.0 "G"%}TVA{%endifequal%}{% ifequal row.0 "H"%}IS et FG{%endifequal%}{% ifequal row.0 "I"%}DAS2{%endifequal%}{% ifequal row.0 "J"%}IS et prix de transfert{%endifequal%}{% ifequal row.0 "K"%}IS et comptes de tiers{%endifequal%}{% ifequal row.0 "L"%}IS et stocks{%endifequal%}{% ifequal row.0 "M"%}Comportements anormaux{%endifequal%}{% ifequal row.0 "N"%}IS et immobilisations{%endifequal%}{% ifequal row.0 "O"%}IS et CCA et intérêts{%endifequal%}{% ifequal row.0 "P"%}Fiscaux{%endifequal%}{% ifequal row.0 "Q"%}Statistiques{%endifequal%}{% ifequal row.0 "R"%}Sur 2 exercices{%endifequal%}{% ifequal row.0 "S"%}Complementaires One Shot{%endifequal%}{% ifequal row.0 "T"%}Complementaires Long Terme{%endifequal%}', img: 'icon-folder', expanded: false, count: {{row.2}}, nodes: [ {% endifchanged %}
+				{ id: "{{row.3|safe}}", text: "{{row.1|safe}}", icon: 'fa-home' },{%endfor%}
+			]  
+            },
+        ]
+    });
+	w2ui.sidebar.on('*', function (event) {
+		if(event.type == 'click' && !isNaN(parseInt(event.target))){
+			if(event.target=="-1"){
+				parent.location.href='{% url 'Vue.views.rapport' id_file %}';
+			}
+			else{ 
+				if(event.target=="0"){
+					parent.location.href='{% url 'Vue.views.drilldown' id_file '0' '0' %}';
+				}
+				else{
+					parent.location.href='{% url 'Vue.views.control' id_file %}' + event.target;
+				}
+			}
+			console.log('Event: ' + event.type + ' Target: ' + event.target);
+			console.log(event);
+		}
+    });
+});
+</script>

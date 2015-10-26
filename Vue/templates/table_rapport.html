@@ -1,0 +1,23 @@
+{% extends "table.html" %}
+{% load tags_extras %}
+
+{%block Table_url_json %}
+	url:'rapport.json',
+{% endblock Table_url_json %}
+
+{% block Table_entete_label %}
+	{{entete|sous_formatRapport|safe}}
+{% endblock Table_entete_label %}
+
+{% block Table_entete_name %}
+	{{entete|sous_formatRapport|safe}}
+{% endblock Table_entete_name %}
+
+{% block Table_tooltip_par_defaut_champ %}title: true,{% endblock Table_tooltip_par_defaut_champ %}
+
+{% block Table_export_csv %}
+{% endblock Table_export_csv %}
+
+{% block Table_dblclick %}
+	parent.location.href="{% url 'Vue.views.control' id_file %}" + rowid;
+{% endblock Table_dblclick %}

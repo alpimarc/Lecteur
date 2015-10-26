@@ -1,0 +1,18 @@
+﻿<h1>Se connecter</h1>
+
+{% if error %}
+<p><strong>Utilisateur inexistant ou mot de passe incorrect.</strong></p>
+{% endif %}
+
+{% if user.is_authenticated %}
+Vous êtes connecté, {{ user.username }} !
+{% if next %}<meta http-equiv="refresh" content="1; URL={{ next }}">{% endif%}
+{% else %}
+<form method="post" action=".">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="hidden" name="next" value="{{next}}" />
+<input type="submit"/>
+</form>
+{% endif %}
+

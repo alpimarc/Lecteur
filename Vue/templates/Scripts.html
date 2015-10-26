@@ -1,0 +1,54 @@
+	{% load static %}
+	
+	{# Framework JQuery #}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	{# <script src="{% static 'JQuery/jquery.min.js' %}"></script> #}
+	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	{# <script src="{% static 'JQuery/jquery-ui.min.js' %}"></script> #}
+	
+	{# Pour la sidebar et la table #}
+	<!-- link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.4.2.min.css" />
+    <script type="text/javascript" src="http://w2ui.com/src/w2ui-1.4.2.min.js"></script -->
+	<link rel="stylesheet" type="text/css" href="{%static 'Sidebar/w2ui-1.4.2.min.css' %}" />
+	<script type="text/javascript" src="{%static 'Sidebar/w2ui-1.4.2.min.js' %}"></script>
+
+	{# pour la table #}
+	<script type="text/ecmascript" src="{%static 'jqGrid-4.7.0/js/minified/jquery.jqGrid.min.js'%}"></script>
+    <!-- This is the localization file of the grid controlling messages, labels, etc.
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="{%static 'jqGrid-4.7.0/js/i18n/grid.locale-fr.js'%}"></script>
+    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
+    <!--link rel="stylesheet" type="text/css" media="screen" href="http://code.jquery.com/ui/1.11.1/jquery-ui.min.css" /-->
+	<link rel="stylesheet" type="text/css" media="screen" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.1/themes/start/jquery-ui.css" />
+    <!-- The link to the CSS that the grid needs -->
+    <link rel="stylesheet" type="text/css" media="screen" href="{%static 'jqGrid-4.7.0/css/ui.jqgrid.css'%}" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
+
+	{# Pour les graphiques #}
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+		google.load("visualization", "1", {packages:["corechart", 'table']});
+	</script>
+
+	{# PageSlide #}
+	<link rel="stylesheet" type="text/css" href="{%static 'PageSlide/jquery.pageslide.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{%static 'PageSlide/style.css' %}" />
+	<script src="{%static 'PageSlide/jquery.pageslide.min.js' %}"></script>
+	
+	{# Fenetre modale #}
+	<link rel="stylesheet" href="{%static 'Fenetre-modale/demo.css' %}">
+	<link rel="stylesheet" href="{%static 'Fenetre-modale/avgrund.css' %}">
+	<script>
+		function openDialog() {	Avgrund.show( "#default-popup" );}
+		function closeDialog() {  Avgrund.hide();}
+	</script>
+	<script type="text/javascript" src="{%static 'Fenetre-modale/avgrund.js' %}"></script>
+	
+	{# Bouton #}
+	<link rel="stylesheet" href="{%static 'Bouton/style.css' %}">
+	
+	{# Pour les tab #}
+	<!--script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
+	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">

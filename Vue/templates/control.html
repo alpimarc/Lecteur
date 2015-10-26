@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block Titre %}{{control}}{% endblock Titre %}
+
+{% block Graphique_header %}
+    {% if tablesGraphiques%}
+		<script>
+			$(function() {
+				$( "#tabs-graphique" ).tabs({
+					collapsible: true
+				});
+			});
+			$(function () {
+				$("#tabs").find('a').prop('href', function(){
+					console.log($(this).attr('href'));
+					return window.location.href + $(this).attr('href');
+				}).end().tabs();
+});
+		</script>
+		{% include "graphique.html" with id_file=id_file tablesGraphiques=tablesGraphiques page=page %}
+    {% endif %}
+{% endblock Graphique_header %}
+
+{% block Redimensionne %}
+	{% for id, tableResultat, entetesTypes in tablesResultats %}
+		$("#jqGrid{{id}}").jqGrid("setGridWidth", dim[0]*0.99);
+		$("#jqGrid{{id}}").jqGrid("setGridHeight", dim[1]*0.96{% if tablesGraphiques%}*0.5{%elif tablesResultats|length > 1 %}*0.5{%endif%}-110);
+	{% endfor %}
+	{% if tablesGraphiques%}
+	resizeChart();
+	{% endif %}
+{% endblock Redimensionne %}
+
+{% block Top_titre %}{{control}}{% endblock Top_titre %}
+
+{% block boutons %}
+    {% include "boutons.html" with id_file=id_file id_test=id_test %}
+{% endblock boutons %}
+
+{% block Aide %}
+    {% include "aide.html" with risque=risque description=description loi=loi comment=comment %}
+{% endblock Aide %}
+
+{% block Graphique %}
+    {% if tablesGraphiques%}
+		<div id="tabs-graphique">
+			<ul>
+				{% for id, type, titre, nb_pages, inverse in tablesGraphiques %}
+					<li><a id="click_graphique_{{id}}" href="#tab" onclick="if (current_id!={{id}}) {drawChartX({{id}});} /*else {$('#tabs-graphique').tabs({hide: {effect:'fade', duration: 500},
+																show: {effect: 'fade', duration: 500},
+																collapsible: true, active: false});}*/ return false;">{{titre}}</a></li>
+				{%endfor%}
+			</ul>
+			<div id="tab"/>
+			<div id="graphique">
+				<div id="chart_div"></div>
+				<span style="cursor:pointer;" onclick="Paginate('prev');">Prec</span>&nbsp; 
+				<span id="num_page">1</span>
+				<span> sur </span>
+				<span id="pageMax">{{nb_pages}}</span>
+				<span style="cursor:pointer;" onclick="Paginate('next');">Suiv</span> 
+			</div>
+        </div>
+    {% else %}
+    <style>
+        #table { 
+            width: 100%;
+            height: 96%;
+            padding: 0em;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+    {%endif%}
+{% endblock Graphique %}
+            
+{% block Table %}
+    {% if tablesResultats%}
+		{% if tablesGraphiques or tablesResultats|length > 1 %}
+			<div id="table">
+				{% if tablesGraphiques %}
+					<div class="auto-style2">
+						<!--h3 class="ui-widget-header">Table :</h3-->
+						<section id="content" class="auto-style2">
+				{% endif %}
+		{% endif %}
+                    {% for id, tableResultat, entetesTypes in tablesResultats %}
+                        {% include "table_control.html" with id_file=id_file  id=id tableResultat=tableResultat entetesTypes=entetesTypes%}
+                    {% endfor %}
+		{% if tablesGraphiques or tablesResultats|length > 1 %}
+					</section>
+			{% if tablesGraphiques %}
+					</div>
+				</div>
+			{% endif %}
+        {% endif %}
+    {%endif%}
+{% endblock Table %}

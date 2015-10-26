@@ -1,0 +1,36 @@
+﻿{% load tags_extras %}
+<aside id="default-popup" class="avgrund-popup">
+{% if risque %}
+		<div id='risque'>
+			<h3 class="auto-style2">Risques :</h3>
+			{{risque|sous_formatRapport|safe}}
+		</div>
+		<hr width="90%">
+{%endif%}
+
+{% if description %}
+		<div id='description'>
+			<h3 class="auto-style2">Description du contrôle :</h3>
+			{{description|sous_formatRapport|safe}}
+		</div>
+		<hr width="90%">
+{%endif%}
+
+{% if loi %}
+		<div >
+			<h3 class="auto-style2">Rappels règlementaires :</h3>
+			{{loi|sous_formatRapport|safe}}
+		</div>
+		<hr width="90%">
+{%endif%}
+
+{% if comment %}
+		<div >
+			<h3 class="auto-style2">Commentaire :</h3>
+			{{comment|sous_formatRapport|safe}}
+		</div>
+		<hr width="90%">
+{%endif%}
+</br>
+<a class="btn" onclick="javascript:closeDialog();">Fermer</a>
+</aside>

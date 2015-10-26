@@ -1,0 +1,31 @@
+{% extends "table.html" %}
+{% load tags_extras %}
+
+{%block Table_url_json %}
+	url:'data_{{id}}.json',
+	{% if tablesGraphiques %}
+		loadComplete: function(data){
+			url_filtre=data.url;
+			drawChart();
+		},
+	{% endif %}
+{% endblock Table_url_json %}
+
+{% block Table_entete_label %}
+	{{entete|sous_formatRapport|safe}}
+{% endblock Table_entete_label %}
+
+{% block Table_entete_name %}
+	{{entete|sous_formatRapport|safe}}
+{% endblock Table_entete_name %}
+
+{% block Table_hidden_champ %}{% endblock Table_hidden_champ %}
+
+{% block Table_tooltip_par_defaut_champ %}title: true,{% endblock Table_tooltip_par_defaut_champ %}
+
+{% block Url_export_csv %}{% url 'Vue.views.view_csv' id_file id %}{% endblock Url_export_csv %}
+
+{% block Table_dblclick %}
+    var record = '?csrfmiddlewaretoken={{ csrf_token }}'
+    var myWindow = window.open("{% url 'Vue.views.drilldown' id_file id '' %}"+rowid+record, "MsgWindow", fullscreen='yes');//"width=100%, height=100%");
+{% endblock Table_dblclick %}

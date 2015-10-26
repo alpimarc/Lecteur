@@ -1,0 +1,3 @@
+﻿{% load tags_extras %}{% autoescape off %}{{ entete|nombre|join:';'}}
+{% for ligne in curseur%}{{ ligne|nombre|join:";"}}
+{% endfor %}{% endautoescape %}

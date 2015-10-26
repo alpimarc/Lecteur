@@ -1,0 +1,14 @@
+{% load tags_extras %}
+{% autoescape off %}
+{
+	"cols": [
+		{% for entete in entetes %}{"id":{{entete|sous_texte}}, "label":{{entete|sous_texte}}, "type":"{% if forloop.first %}string{%else%}number{%endif%}"}{% if not forloop.last %},{% endif %}
+		{%endfor%}
+		],
+	"rows": [
+		{% for ligne in curseur %}{"c":[{%for valeur in ligne %}{"v":{{valeur|sous_texte|sous_nombre_inverse}}}{% if not forloop.last %},{% endif %}{%endfor%}]}{% if not forloop.last %},{% endif %}
+		{%endfor%}],
+	"nb_pages" : {{nb_pages}},
+	"num_page" : {{num_page}}
+}
+{% endautoescape%}

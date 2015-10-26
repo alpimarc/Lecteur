@@ -1,0 +1,9 @@
+body { background: #f4f4f4;	font: 14px/18px Helvetica, Arial, sans-serif;color: #666; }
+
+a, a:visited { color: #C30; text-decoration: none; }
+a:hover { color: #900;}
+p { margin-bottom: 20px; }
+
+#modal { display: none; }
+#modal a { background: #CCC; color: #333; font-weight: bold; padding: 5px 10px; border: none; }
+#modal a:hover { background: #aaa; } 
